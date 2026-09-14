@@ -59,4 +59,4 @@ def compare_productivity_trend(days: int = 30) -> dict:
 
 
 if __name__ == "__main__":
-    mcp.run(transport="http", host="127.0.0.1", port=8002)
+    mcp.run(transport="http", host="0.0.0.0", port=8002)

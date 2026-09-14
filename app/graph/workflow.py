@@ -50,6 +50,15 @@ async def productivity_node(state: AgentState) -> dict:
     _log_state("productivity", output, "OUT (added to shared state)")
     return output
 
+def reset_query_state(state: AgentState) -> dict:
+    return {
+        "health_report": "",
+        "finance_report": "",
+        "productivity_report": "",
+        "insight": "",
+        "action_taken": "none",
+    }
+
 
 def route_from_coordinator(state: AgentState) -> list[str]:
     return state["relevant_domains"]
@@ -57,7 +66,7 @@ def route_from_coordinator(state: AgentState) -> list[str]:
 
 def build_graph():
     graph = StateGraph(AgentState)
-
+    graph.add_node("reset", reset_query_state)
     graph.add_node("coordinator", coordinator_node)
     graph.add_node("health", health_node)
     graph.add_node("finance", finance_node)
@@ -65,7 +74,8 @@ def build_graph():
     graph.add_node("insight", insight_node)
     graph.add_node("action", action_node)
 
-    graph.add_edge(START, "coordinator")
+    graph.add_edge(START, "reset")
+    graph.add_edge("reset", "coordinator")
 
     graph.add_conditional_edges(
         "coordinator",

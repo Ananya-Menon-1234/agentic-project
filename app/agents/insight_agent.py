@@ -7,9 +7,15 @@ load_dotenv()
 
 llm = ChatGroq(model="openai/gpt-oss-20b", temperature=0)
 
-INSIGHT_PROMPT_TEMPLATE = """You are the Insight Agent. Combine these three domain \
-reports into one short overall summary (5-6 sentences, plain text, no markdown). \
+INSIGHT_PROMPT_TEMPLATE = """You are the Insight Agent.
+
+Combine ONLY the domain reports that contain actual data into one short overall
+summary of 5-6 sentences, plain text, no markdown.
+
+Ignore any report marked "(not requested)".
+
 Then, on a final line by itself, output exactly one of:
+
 ACTION: none
 ACTION: doctor
 ACTION: financial_planner
@@ -24,7 +30,6 @@ FINANCE REPORT:
 PRODUCTIVITY REPORT:
 {productivity_report}
 """
-
 
 async def insight_node(state: AgentState) -> dict:
     prompt = INSIGHT_PROMPT_TEMPLATE.format(
@@ -41,8 +46,6 @@ async def insight_node(state: AgentState) -> dict:
 
 
 def route_after_insight(state: AgentState) -> str:
-    """Conditional edge function — tells the graph whether to go to
-    the action node or straight to END."""
     text = state["insight"].lower()
     if "action: none" in text:
         return "end"
