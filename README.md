@@ -1,7 +1,3 @@
-Absolutely. For GitHub, I’d make the README more technical than the LinkedIn post, but still readable. It should explain **what the project does, architecture, data generation, agents, MCP, actions, Docker, Railway, setup, and limitations**.
-
-You can copy-paste the following directly into `README.md`.
-
 # Personal Insight Agent
 
 A multi-agent AI system that analyzes synthetic **health, finance, and productivity data** and generates cross-domain insights using specialized AI agents.
@@ -723,16 +719,6 @@ Building this project gave me hands-on experience with:
 * Docker containerization
 * Docker Compose
 * Cloud deployment
-
----
-
-## Disclaimer
-
-This project is a technical demonstration and portfolio project.
-
-All health, finance and productivity data is synthetic.
-
-The system is **not a medical, financial, or mental-health advisory tool**, and the generated insights should not be treated as professional advice.
 
 ---
 
