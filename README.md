@@ -71,25 +71,12 @@ The Coordinator Agent determines which domain agents need to execute based on th
 
 For example:
 
-"How has my productivity been this month?"
-                │
-                ▼
-        Coordinator Agent
-                │
-                ▼
-       Productivity Agent
+"How has my productivity been this month?" --> Coordinator Agent -->  Productivity Agent
+
 
 Whereas:
 
-"How am I doing overall across my health,
- finances and productivity?"
-                │
-                ▼
-        Coordinator Agent
-                │
-       ┌────────┼────────┐
-       ▼        ▼        ▼
-    Health   Finance  Productivity
+"How am I doing overall across my health, finances and productivity?" --> Coordinator Agent --> Health + Finance + Productivity
 
 This prevents unnecessary agents from running for every query.
 
@@ -186,16 +173,7 @@ The domain agents do not directly read the JSON files.
 Instead, each domain exposes its data through a dedicated **FastMCP server**.
 
 
-Health Agent
-     │
-     ▼
-MCP Client
-     │
-     ▼
-Health MCP Server
-     │
-     ▼
-health.json
+Health Agent --> MCP Client --> Health MCP Server --> health.json
 
 
 The same pattern is used for Finance and Productivity.
@@ -203,7 +181,6 @@ The same pattern is used for Finance and Productivity.
 ### Health MCP Tools
 
 The Health MCP server exposes tools such as:
-
 
 get_health_data()
 get_health_stats()
