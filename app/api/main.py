@@ -4,6 +4,8 @@ import gradio as gr
 
 from app.graph.workflow import build_graph
 
+import os
+
 _graph = None 
 
 
@@ -87,4 +89,5 @@ with gr.Blocks(title="Personal Insight Agent") as demo:
     )
 
 if __name__ == "__main__":
-    demo.launch(server_name="0.0.0.0", server_port=7860, share=True)
+    port = int(os.environ.get("PORT", 7860))
+    demo.launch(server_name="0.0.0.0", server_port=port)
