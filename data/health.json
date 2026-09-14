@@ -1,0 +1,302 @@
+[
+  {
+    "date": "2026-09-01",
+    "sleep_hours": 7.0,
+    "steps": 8432,
+    "resting_heart_rate": 62,
+    "active_minutes": 49,
+    "calories_burned": 2139,
+    "stress_score": 42.0,
+    "mood_score": 72.0
+  },
+  {
+    "date": "2026-09-02",
+    "sleep_hours": 6.9,
+    "steps": 8310,
+    "resting_heart_rate": 63,
+    "active_minutes": 47,
+    "calories_burned": 2116,
+    "stress_score": 44.0,
+    "mood_score": 70.0
+  },
+  {
+    "date": "2026-09-03",
+    "sleep_hours": 7.0,
+    "steps": 8479,
+    "resting_heart_rate": 62,
+    "active_minutes": 50,
+    "calories_burned": 2151,
+    "stress_score": 41.0,
+    "mood_score": 72.0
+  },
+  {
+    "date": "2026-09-04",
+    "sleep_hours": 7.1,
+    "steps": 8636,
+    "resting_heart_rate": 62,
+    "active_minutes": 52,
+    "calories_burned": 2164,
+    "stress_score": 40.0,
+    "mood_score": 73.0
+  },
+  {
+    "date": "2026-09-05",
+    "sleep_hours": 7.3,
+    "steps": 9104,
+    "resting_heart_rate": 61,
+    "active_minutes": 56,
+    "calories_burned": 2213,
+    "stress_score": 37.0,
+    "mood_score": 76.0
+  },
+  {
+    "date": "2026-09-06",
+    "sleep_hours": 7.3,
+    "steps": 8985,
+    "resting_heart_rate": 61,
+    "active_minutes": 57,
+    "calories_burned": 2223,
+    "stress_score": 36.0,
+    "mood_score": 77.0
+  },
+  {
+    "date": "2026-09-07",
+    "sleep_hours": 7.3,
+    "steps": 9332,
+    "resting_heart_rate": 61,
+    "active_minutes": 59,
+    "calories_burned": 2248,
+    "stress_score": 34.0,
+    "mood_score": 79.0
+  },
+  {
+    "date": "2026-09-08",
+    "sleep_hours": 7.1,
+    "steps": 8870,
+    "resting_heart_rate": 61,
+    "active_minutes": 55,
+    "calories_burned": 2203,
+    "stress_score": 37.0,
+    "mood_score": 76.0
+  },
+  {
+    "date": "2026-09-09",
+    "sleep_hours": 7.3,
+    "steps": 9163,
+    "resting_heart_rate": 61,
+    "active_minutes": 57,
+    "calories_burned": 2231,
+    "stress_score": 35.0,
+    "mood_score": 77.0
+  },
+  {
+    "date": "2026-09-10",
+    "sleep_hours": 6.2,
+    "steps": 6587,
+    "resting_heart_rate": 65,
+    "active_minutes": 34,
+    "calories_burned": 1966,
+    "stress_score": 55.0,
+    "mood_score": 61.0
+  },
+  {
+    "date": "2026-09-11",
+    "sleep_hours": 6.2,
+    "steps": 6645,
+    "resting_heart_rate": 65,
+    "active_minutes": 35,
+    "calories_burned": 1978,
+    "stress_score": 54.0,
+    "mood_score": 61.0
+  },
+  {
+    "date": "2026-09-12",
+    "sleep_hours": 6.3,
+    "steps": 7091,
+    "resting_heart_rate": 65,
+    "active_minutes": 37,
+    "calories_burned": 1994,
+    "stress_score": 53.0,
+    "mood_score": 62.0
+  },
+  {
+    "date": "2026-09-13",
+    "sleep_hours": 6.2,
+    "steps": 6587,
+    "resting_heart_rate": 65,
+    "active_minutes": 33,
+    "calories_burned": 1956,
+    "stress_score": 56.0,
+    "mood_score": 60.0
+  },
+  {
+    "date": "2026-09-14",
+    "sleep_hours": 6.1,
+    "steps": 6659,
+    "resting_heart_rate": 65,
+    "active_minutes": 33,
+    "calories_burned": 1959,
+    "stress_score": 56.0,
+    "mood_score": 60.0
+  },
+  {
+    "date": "2026-09-15",
+    "sleep_hours": 6.2,
+    "steps": 6699,
+    "resting_heart_rate": 65,
+    "active_minutes": 35,
+    "calories_burned": 1977,
+    "stress_score": 55.0,
+    "mood_score": 61.0
+  },
+  {
+    "date": "2026-09-16",
+    "sleep_hours": 6.3,
+    "steps": 6600,
+    "resting_heart_rate": 65,
+    "active_minutes": 33,
+    "calories_burned": 1956,
+    "stress_score": 56.0,
+    "mood_score": 60.0
+  },
+  {
+    "date": "2026-09-17",
+    "sleep_hours": 6.0,
+    "steps": 6254,
+    "resting_heart_rate": 66,
+    "active_minutes": 30,
+    "calories_burned": 1919,
+    "stress_score": 59.0,
+    "mood_score": 58.0
+  },
+  {
+    "date": "2026-09-18",
+    "sleep_hours": 6.1,
+    "steps": 6363,
+    "resting_heart_rate": 66,
+    "active_minutes": 31,
+    "calories_burned": 1927,
+    "stress_score": 58.0,
+    "mood_score": 58.0
+  },
+  {
+    "date": "2026-09-19",
+    "sleep_hours": 7.1,
+    "steps": 8741,
+    "resting_heart_rate": 61,
+    "active_minutes": 55,
+    "calories_burned": 2198,
+    "stress_score": 38.0,
+    "mood_score": 75.0
+  },
+  {
+    "date": "2026-09-20",
+    "sleep_hours": 7.0,
+    "steps": 8459,
+    "resting_heart_rate": 62,
+    "active_minutes": 51,
+    "calories_burned": 2160,
+    "stress_score": 41.0,
+    "mood_score": 73.0
+  },
+  {
+    "date": "2026-09-21",
+    "sleep_hours": 7.3,
+    "steps": 9394,
+    "resting_heart_rate": 61,
+    "active_minutes": 57,
+    "calories_burned": 2228,
+    "stress_score": 36.0,
+    "mood_score": 77.0
+  },
+  {
+    "date": "2026-09-22",
+    "sleep_hours": 7.4,
+    "steps": 9224,
+    "resting_heart_rate": 61,
+    "active_minutes": 58,
+    "calories_burned": 2236,
+    "stress_score": 35.0,
+    "mood_score": 78.0
+  },
+  {
+    "date": "2026-09-23",
+    "sleep_hours": 7.4,
+    "steps": 9186,
+    "resting_heart_rate": 61,
+    "active_minutes": 57,
+    "calories_burned": 2229,
+    "stress_score": 35.0,
+    "mood_score": 77.0
+  },
+  {
+    "date": "2026-09-24",
+    "sleep_hours": 7.4,
+    "steps": 9268,
+    "resting_heart_rate": 61,
+    "active_minutes": 58,
+    "calories_burned": 2235,
+    "stress_score": 35.0,
+    "mood_score": 78.0
+  },
+  {
+    "date": "2026-09-25",
+    "sleep_hours": 6.6,
+    "steps": 7625,
+    "resting_heart_rate": 63,
+    "active_minutes": 44,
+    "calories_burned": 2076,
+    "stress_score": 47.0,
+    "mood_score": 68.0
+  },
+  {
+    "date": "2026-09-26",
+    "sleep_hours": 6.5,
+    "steps": 7122,
+    "resting_heart_rate": 64,
+    "active_minutes": 39,
+    "calories_burned": 2025,
+    "stress_score": 51.0,
+    "mood_score": 64.0
+  },
+  {
+    "date": "2026-09-27",
+    "sleep_hours": 6.4,
+    "steps": 7137,
+    "resting_heart_rate": 64,
+    "active_minutes": 37,
+    "calories_burned": 2000,
+    "stress_score": 53.0,
+    "mood_score": 63.0
+  },
+  {
+    "date": "2026-09-28",
+    "sleep_hours": 6.3,
+    "steps": 6816,
+    "resting_heart_rate": 65,
+    "active_minutes": 37,
+    "calories_burned": 1995,
+    "stress_score": 53.0,
+    "mood_score": 62.0
+  },
+  {
+    "date": "2026-09-29",
+    "sleep_hours": 6.6,
+    "steps": 7397,
+    "resting_heart_rate": 64,
+    "active_minutes": 41,
+    "calories_burned": 2043,
+    "stress_score": 50.0,
+    "mood_score": 65.0
+  },
+  {
+    "date": "2026-09-30",
+    "sleep_hours": 6.4,
+    "steps": 7060,
+    "resting_heart_rate": 64,
+    "active_minutes": 40,
+    "calories_burned": 2027,
+    "stress_score": 51.0,
+    "mood_score": 64.0
+  }
+]

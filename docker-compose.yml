@@ -1,0 +1,44 @@
+services:
+  health-server:
+    build:
+      context: .
+      dockerfile: Dockerfile.health
+    ports:
+      - "8000:8000"
+    restart: unless-stopped
+
+  finance-server:
+    build:
+      context: .
+      dockerfile: Dockerfile.finance
+    ports:
+      - "8001:8001"
+    restart: unless-stopped
+
+  productivity-server:
+    build:
+      context: .
+      dockerfile: Dockerfile.productivity
+    ports:
+      - "8002:8002"
+    restart: unless-stopped
+
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile.web
+    ports:
+      - "7860:7860"
+    depends_on:
+      - health-server
+      - finance-server
+      - productivity-server
+    environment:
+      - GROQ_API_KEY=${GROQ_API_KEY}
+      - GMAIL_ADDRESS=${GMAIL_ADDRESS}
+      - GMAIL_APP_PASSWORD=${GMAIL_APP_PASSWORD}
+      - REMINDER_RECIPIENT=${REMINDER_RECIPIENT}
+      - HEALTH_MCP_URL=http://health-server:8000/mcp
+      - FINANCE_MCP_URL=http://finance-server:8001/mcp
+      - PRODUCTIVITY_MCP_URL=http://productivity-server:8002/mcp
+    restart: unless-stopped

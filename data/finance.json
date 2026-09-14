@@ -1,0 +1,242 @@
+[
+  {
+    "date": "2026-09-01",
+    "daily_spend": 79.84,
+    "account_balance": 7620.16,
+    "savings_rate_pct": 13.3,
+    "credit_utilization_pct": 49.2,
+    "financial_stress_score": 44.0
+  },
+  {
+    "date": "2026-09-02",
+    "daily_spend": 88.06,
+    "account_balance": 7532.1,
+    "savings_rate_pct": 12.6,
+    "credit_utilization_pct": 51.1,
+    "financial_stress_score": 46.0
+  },
+  {
+    "date": "2026-09-03",
+    "daily_spend": 85.04,
+    "account_balance": 7447.06,
+    "savings_rate_pct": 13.7,
+    "credit_utilization_pct": 48.2,
+    "financial_stress_score": 43.0
+  },
+  {
+    "date": "2026-09-04",
+    "daily_spend": 79.52,
+    "account_balance": 7367.54,
+    "savings_rate_pct": 14.1,
+    "credit_utilization_pct": 47.1,
+    "financial_stress_score": 42.0
+  },
+  {
+    "date": "2026-09-05",
+    "daily_spend": 69.23,
+    "account_balance": 7298.31,
+    "savings_rate_pct": 15.8,
+    "credit_utilization_pct": 42.9,
+    "financial_stress_score": 37.0
+  },
+  {
+    "date": "2026-09-06",
+    "daily_spend": 71.12,
+    "account_balance": 7227.19,
+    "savings_rate_pct": 16.1,
+    "credit_utilization_pct": 42.1,
+    "financial_stress_score": 37.0
+  },
+  {
+    "date": "2026-09-07",
+    "daily_spend": 73.81,
+    "account_balance": 7153.38,
+    "savings_rate_pct": 16.9,
+    "credit_utilization_pct": 40.0,
+    "financial_stress_score": 34.0
+  },
+  {
+    "date": "2026-09-08",
+    "daily_spend": 75.22,
+    "account_balance": 7078.16,
+    "savings_rate_pct": 15.5,
+    "credit_utilization_pct": 43.7,
+    "financial_stress_score": 38.0
+  },
+  {
+    "date": "2026-09-09",
+    "daily_spend": 75.83,
+    "account_balance": 7002.33,
+    "savings_rate_pct": 16.4,
+    "credit_utilization_pct": 41.4,
+    "financial_stress_score": 36.0
+  },
+  {
+    "date": "2026-09-10",
+    "daily_spend": 110.88,
+    "account_balance": 6891.45,
+    "savings_rate_pct": 7.6,
+    "credit_utilization_pct": 63.9,
+    "financial_stress_score": 60.0
+  },
+  {
+    "date": "2026-09-11",
+    "daily_spend": 100.72,
+    "account_balance": 6790.73,
+    "savings_rate_pct": 8.0,
+    "credit_utilization_pct": 62.8,
+    "financial_stress_score": 59.0
+  },
+  {
+    "date": "2026-09-12",
+    "daily_spend": 105.67,
+    "account_balance": 6685.06,
+    "savings_rate_pct": 8.5,
+    "credit_utilization_pct": 61.5,
+    "financial_stress_score": 57.0
+  },
+  {
+    "date": "2026-09-13",
+    "daily_spend": 110.44,
+    "account_balance": 6574.62,
+    "savings_rate_pct": 7.2,
+    "credit_utilization_pct": 64.7,
+    "financial_stress_score": 61.0
+  },
+  {
+    "date": "2026-09-14",
+    "daily_spend": 108.67,
+    "account_balance": 6465.95,
+    "savings_rate_pct": 7.3,
+    "credit_utilization_pct": 64.5,
+    "financial_stress_score": 61.0
+  },
+  {
+    "date": "2026-09-15",
+    "daily_spend": 103.47,
+    "account_balance": 6362.48,
+    "savings_rate_pct": 7.9,
+    "credit_utilization_pct": 62.9,
+    "financial_stress_score": 59.0
+  },
+  {
+    "date": "2026-09-16",
+    "daily_spend": 110.03,
+    "account_balance": 7752.45,
+    "savings_rate_pct": 7.2,
+    "credit_utilization_pct": 64.7,
+    "financial_stress_score": 61.0
+  },
+  {
+    "date": "2026-09-17",
+    "daily_spend": 109.77,
+    "account_balance": 7642.68,
+    "savings_rate_pct": 6.0,
+    "credit_utilization_pct": 67.8,
+    "financial_stress_score": 64.0
+  },
+  {
+    "date": "2026-09-18",
+    "daily_spend": 111.99,
+    "account_balance": 7530.69,
+    "savings_rate_pct": 6.2,
+    "credit_utilization_pct": 67.2,
+    "financial_stress_score": 63.0
+  },
+  {
+    "date": "2026-09-19",
+    "daily_spend": 75.14,
+    "account_balance": 7455.55,
+    "savings_rate_pct": 15.3,
+    "credit_utilization_pct": 44.2,
+    "financial_stress_score": 39.0
+  },
+  {
+    "date": "2026-09-20",
+    "daily_spend": 85.36,
+    "account_balance": 7370.19,
+    "savings_rate_pct": 14.0,
+    "credit_utilization_pct": 47.4,
+    "financial_stress_score": 42.0
+  },
+  {
+    "date": "2026-09-21",
+    "daily_spend": 75.36,
+    "account_balance": 7294.83,
+    "savings_rate_pct": 16.3,
+    "credit_utilization_pct": 41.7,
+    "financial_stress_score": 36.0
+  },
+  {
+    "date": "2026-09-22",
+    "daily_spend": 68.11,
+    "account_balance": 7226.72,
+    "savings_rate_pct": 16.5,
+    "credit_utilization_pct": 41.0,
+    "financial_stress_score": 35.0
+  },
+  {
+    "date": "2026-09-23",
+    "daily_spend": 71.46,
+    "account_balance": 7155.26,
+    "savings_rate_pct": 16.3,
+    "credit_utilization_pct": 41.6,
+    "financial_stress_score": 36.0
+  },
+  {
+    "date": "2026-09-24",
+    "daily_spend": 67.46,
+    "account_balance": 7087.8,
+    "savings_rate_pct": 16.5,
+    "credit_utilization_pct": 41.1,
+    "financial_stress_score": 35.0
+  },
+  {
+    "date": "2026-09-25",
+    "daily_spend": 96.36,
+    "account_balance": 6991.44,
+    "savings_rate_pct": 11.2,
+    "credit_utilization_pct": 54.5,
+    "financial_stress_score": 50.0
+  },
+  {
+    "date": "2026-09-26",
+    "daily_spend": 103.0,
+    "account_balance": 6888.44,
+    "savings_rate_pct": 9.5,
+    "credit_utilization_pct": 58.9,
+    "financial_stress_score": 55.0
+  },
+  {
+    "date": "2026-09-27",
+    "daily_spend": 100.58,
+    "account_balance": 6787.86,
+    "savings_rate_pct": 8.7,
+    "credit_utilization_pct": 61.0,
+    "financial_stress_score": 57.0
+  },
+  {
+    "date": "2026-09-28",
+    "daily_spend": 104.68,
+    "account_balance": 6683.18,
+    "savings_rate_pct": 8.5,
+    "credit_utilization_pct": 61.4,
+    "financial_stress_score": 57.0
+  },
+  {
+    "date": "2026-09-29",
+    "daily_spend": 97.95,
+    "account_balance": 6585.23,
+    "savings_rate_pct": 10.1,
+    "credit_utilization_pct": 57.4,
+    "financial_stress_score": 53.0
+  },
+  {
+    "date": "2026-09-30",
+    "daily_spend": 95.49,
+    "account_balance": 6489.74,
+    "savings_rate_pct": 9.6,
+    "credit_utilization_pct": 58.7,
+    "financial_stress_score": 54.0
+  }
+]
