@@ -25,6 +25,7 @@ Instead of using one large agent for everything, the system uses specialized age
 
 The overall workflow is:
 
+```text
                          User
                            │
                            ▼
@@ -60,6 +61,7 @@ The overall workflow is:
                           │
                           ▼
                         Answer
+```
 
 ---
 
@@ -71,12 +73,29 @@ The Coordinator Agent determines which domain agents need to execute based on th
 
 For example:
 
-"How has my productivity been this month?" --> Coordinator Agent -->  Productivity Agent
-
+```text
+"How has my productivity been this month?"
+                │
+                ▼
+        Coordinator Agent
+                │
+                ▼
+       Productivity Agent
+```
 
 Whereas:
 
-"How am I doing overall across my health, finances and productivity?" --> Coordinator Agent --> Health + Finance + Productivity
+```text
+"How am I doing overall across my health,
+ finances and productivity?"
+                │
+                ▼
+        Coordinator Agent
+                │
+       ┌────────┼────────┐
+       ▼        ▼        ▼
+    Health   Finance  Productivity
+```
 
 This prevents unnecessary agents from running for every query.
 
@@ -127,12 +146,12 @@ The project uses synthetic JSON data instead of real personal information.
 
 The datasets cover September and contain daily records for each domain.
 
-
+```text
 data/
 ├── health.json
 ├── finance.json
 └── productivity.json
-
+```
 
 ### Creating a Meaningful Pattern
 
@@ -140,7 +159,7 @@ Rather than generating completely random data, the datasets intentionally contai
 
 For example:
 
-
+```text
 Health
     ↓
 Lower sleep
@@ -158,7 +177,7 @@ Lower focus
 Lower deep work
 More context switching
 Higher burnout risk
-
+```
 
 This creates a synthetic "rough patch" that the Insight Agent can identify across domains.
 
@@ -172,9 +191,18 @@ The domain agents do not directly read the JSON files.
 
 Instead, each domain exposes its data through a dedicated **FastMCP server**.
 
-
-Health Agent --> MCP Client --> Health MCP Server --> health.json
-
+```text
+Health Agent
+     │
+     ▼
+MCP Client
+     │
+     ▼
+Health MCP Server
+     │
+     ▼
+health.json
+```
 
 The same pattern is used for Finance and Productivity.
 
@@ -182,16 +210,17 @@ The same pattern is used for Finance and Productivity.
 
 The Health MCP server exposes tools such as:
 
+```text
 get_health_data()
 get_health_stats()
 compare_health_trend()
-
+```
 
 The corresponding Finance and Productivity MCP servers expose domain-specific tools.
 
 This creates a separation between:
 
-
+```text
 Agent
   │
   │ reasoning
@@ -201,13 +230,13 @@ MCP Tool
   │ data access
   ▼
 Data Source
-
+```
 
 One advantage of this approach is that the underlying data source can be changed later.
 
 For example:
 
-
+```text
 JSON
  ↓
 Database
@@ -215,7 +244,7 @@ Database
 External API
  ↓
 Wearable API
-
+```
 
 without fundamentally changing the agent's reasoning layer.
 
@@ -227,14 +256,14 @@ The overall workflow is orchestrated using **LangGraph**.
 
 The graph contains nodes for:
 
-
+```text
 Coordinator
 Health
 Finance
 Productivity
 Insight
 Action
-
+```
 
 The Coordinator uses conditional routing to determine which domain agents should execute.
 
@@ -246,7 +275,7 @@ Finally, the Action Agent can determine whether an external action should be per
 
 Conceptually:
 
-
+```text
 START
   │
   ▼
@@ -266,7 +295,7 @@ Health         Finance       Productivity
                  │
                  ▼
                 END
-
+```
 
 ---
 
@@ -276,7 +305,7 @@ The Insight Agent is responsible for combining the outputs of the relevant domai
 
 For example, the individual agents might identify:
 
-
+```text
 Health:
 Sleep decreased and stress increased.
 
@@ -286,17 +315,17 @@ context switching increased.
 
 Finance:
 Spending and financial stress increased.
-
+```
 
 Instead of returning three independent reports, the Insight Agent looks for relationships between them.
 
 The resulting insight might identify a broader pattern such as:
 
-
+```text
 A period of increased stress appears to coincide
 with lower sleep, reduced focus and increased
 financial pressure.
-
+```
 
 The objective is to move from simple data retrieval toward **cross-domain reasoning**.
 
@@ -308,7 +337,7 @@ The Action Agent extends the workflow beyond generating a text response.
 
 The Insight Agent can produce an action decision:
 
-
+```text
 ACTION: none
 
 ACTION: doctor
@@ -316,7 +345,7 @@ ACTION: doctor
 ACTION: financial_planner
 
 ACTION: both
-
+```
 
 The Action Agent then handles the selected action.
 
@@ -330,7 +359,7 @@ The `.ics` file can then be sent through **SMTP** and opened using calendar appl
 
 Conceptually:
 
-
+```text
 Insight Agent
       │
       ▼
@@ -347,11 +376,11 @@ SMTP
       │
       ▼
 Calendar Application
-
+```
 
 This demonstrates an important agentic pattern:
 
-
+```text
 Observation
      ↓
 Reasoning
@@ -359,7 +388,7 @@ Reasoning
 Decision
      ↓
 Action
-
+```
 
 The action functionality is intended as a technical demonstration and should not be interpreted as an actual medical or financial recommendation system.
 
@@ -371,7 +400,7 @@ The application is containerized using **Docker** and **Docker Compose**.
 
 The local setup consists of multiple services:
 
-
+```text
 ┌───────────────────────────────┐
 │         Docker Compose        │
 │                               │
@@ -392,7 +421,7 @@ The local setup consists of multiple services:
 │  └───────────────┘            │
 │                               │
 └───────────────────────────────┘
-
+```
 
 Docker Compose allows the complete application to be started as a group rather than manually launching each service.
 
@@ -419,7 +448,7 @@ The local Docker setup is used for the demo shown in this repository's walkthrou
 
 A simplified version of the project structure is:
 
-
+```text
 Agentic_Project/
 │
 ├── app/
@@ -458,7 +487,7 @@ Agentic_Project/
 ├── requirements.txt
 ├── .gitignore
 └── README.md
-
+```
 
 ---
 
@@ -486,37 +515,37 @@ Agentic_Project/
 
 ### 1. Clone the repository
 
-bash
+```bash
 git clone <your-repository-url>
 cd Agentic_Project
-
+```
 
 ### 2. Create a virtual environment
 
 Windows:
 
-powershell
+```powershell
 python -m venv .venv
-
+```
 
 Activate it:
 
-powershell
+```powershell
 .\.venv\Scripts\Activate.ps1
-
+```
 
 Linux/macOS:
 
-bash
+```bash
 python -m venv .venv
 source .venv/bin/activate
-
+```
 
 ### 3. Install dependencies
 
-bash
+```bash
 pip install -r requirements.txt
-
+```
 
 ### 4. Configure environment variables
 
@@ -524,9 +553,9 @@ Create a `.env` file in the project root.
 
 Example:
 
-env
+```env
 GROQ_API_KEY=your_groq_api_key
-
+```
 
 If email/calendar actions are enabled, configure the required SMTP variables as well.
 
@@ -538,39 +567,39 @@ If email/calendar actions are enabled, configure the required SMTP variables as 
 
 Build the containers:
 
-bash
+```bash
 docker compose build
-
+```
 
 Start the complete application:
 
-bash
+```bash
 docker compose up
-
+```
 
 The Gradio application should then be available at:
 
-
+```text
 http://localhost:7860
-
+```
 
 To run the services in detached mode:
 
-bash
+```bash
 docker compose up -d
-
+```
 
 To view logs:
 
-bash
+```bash
 docker compose logs -f
-
+```
 
 To stop the application:
 
-bash
+```bash
 docker compose down
-
+```
 
 ---
 
@@ -578,13 +607,13 @@ docker compose down
 
 ### Domain-specific query
 
-
+```text
 How has my productivity been this month?
-
+```
 
 Expected routing:
 
-
+```text
 Coordinator
     ↓
 Productivity Agent
@@ -594,18 +623,18 @@ Productivity MCP
 Insight
     ↓
 Answer
-
+```
 
 ### Cross-domain query
 
-
+```text
 How am I doing overall across my health,
 finances and productivity this month?
-
+```
 
 Expected routing:
 
-
+```text
 Coordinator
     ↓
 ┌────────┬─────────┬───────────────┐
@@ -615,14 +644,14 @@ Health   Finance   Productivity
              Insight
                 ↓
              Answer
-
+```
 
 ### Action-oriented query
 
-
+```text
 My stress and financial stress seem high this month.
 Should I consider speaking to a doctor or financial planner?
-
+```
 
 This can demonstrate the Insight → Action workflow and calendar `.ics` generation.
 
@@ -632,7 +661,7 @@ This can demonstrate the Insight → Action workflow and calendar `.ics` generat
 
 A typical request follows this path:
 
-
+```text
 User:
 "How am I doing overall this month?"
                 │
@@ -655,7 +684,7 @@ User:
                 │
                 ▼
         Final Response
-
+```
 
 ---
 
@@ -696,6 +725,23 @@ Building this project gave me hands-on experience with:
 * Docker containerization
 * Docker Compose
 * Cloud deployment
+
+---
+
+## Future Improvements
+
+Some areas I would like to explore next:
+
+* Replace JSON data sources with databases
+* Connect to real APIs where appropriate
+* Add authentication and user-specific data
+* Improve agent observability and tracing
+* Add stronger validation around agent outputs
+* Add automated tests for agent routing and workflows
+* Add CI/CD using GitHub Actions
+* Improve error handling and retry mechanisms
+* Add more sophisticated action integrations
+* Explore human-in-the-loop approval before sensitive actions
 
 ---
 
