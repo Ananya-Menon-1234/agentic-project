@@ -53,4 +53,14 @@ async def coordinator_node(state: AgentState) -> dict:
     print(f"  query: {query}")
     print(f"  routing to: {domains}")
     print(f"{'='*70}\n")
-    return {"relevant_domains": domains}
+    return {
+        "relevant_domains": domains,
+        "health_report": "",
+        "finance_report": "",
+        "productivity_report": "",
+        "insight": "",
+        "action_decision": "none",
+        "action_taken": "none",
+        "retrieved_context": "",
+        "retrieval_sources": [],
+    }

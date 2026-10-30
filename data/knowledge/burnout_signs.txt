@@ -1,0 +1,5 @@
+Burnout is prolonged exhaustion from sustained pressure, often with reduced effectiveness and growing detachment from work. In this app, a burnout risk score above 50 is considered high.
+
+Early signs include falling deep-work hours, more context switching, lower focus scores and poorer sleep at the same time. Rising burnout risk with falling deep work often comes before a larger productivity drop.
+
+Burnout builds over weeks, so catching it early matters. Acting on the first two or three weeks of decline is much easier than recovering after a long slide.

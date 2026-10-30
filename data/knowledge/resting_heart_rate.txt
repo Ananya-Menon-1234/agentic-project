@@ -1,0 +1,5 @@
+A typical resting heart rate for most adults is often quoted as 60 to 100 beats per minute, and fit people are frequently lower. Your own baseline matters more than the range, so a sustained rise above your usual level is the thing to notice.
+
+In this app, a weekly average resting heart rate above about 64 bpm is flagged as elevated, because it tends to rise in the same weeks as poor sleep and high stress.
+
+A resting heart rate that stays elevated for several weeks can reflect poor sleep, stress, illness, caffeine, dehydration or reduced fitness. If it stays high without an obvious cause, or comes with symptoms such as dizziness or chest discomfort, it is worth discussing with a doctor.

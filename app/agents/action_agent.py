@@ -1,11 +1,12 @@
 from app.graph.state import AgentState
 from app.mcp.reminder_client import schedule_reminder
 
+
 async def action_node(state: AgentState) -> dict:
-    text = state["insight"].lower()
+    decision = state.get("action_decision", "none")
     results = []
 
-    if "action: doctor" in text or "action: both" in text:
+    if decision in ("doctor", "both"):
         r = schedule_reminder(
             summary="General health checkup",
             description=(
@@ -17,7 +18,7 @@ async def action_node(state: AgentState) -> dict:
         )
         results.append(f"Doctor checkup reminder: {r['status']} for {r['scheduled_for']}")
 
-    if "action: financial_planner" in text or "action: both" in text:
+    if decision in ("financial_planner", "both"):
         r = schedule_reminder(
             summary="Meeting with financial planner",
             description=(

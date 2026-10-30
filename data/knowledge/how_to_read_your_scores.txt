@@ -1,0 +1,5 @@
+In this app, health scores work like this. Stress score runs from 0 to 100, and a weekly average above 50 counts as high stress. Mood score runs from 0 to 100, where higher is better. Sleep below about 6.5 hours a night and a resting heart rate above about 64 bpm are flagged. These thresholds are this app's own definitions, not clinical cut-offs.
+
+In this app, finance scores work like this. Financial stress score runs from 0 to 100, and a weekly average above 50 counts as high. A savings rate below 10 percent is flagged as low, and credit utilization above 60 percent is flagged as high. These thresholds are this app's own alarm levels, not official credit or banking standards.
+
+In this app, productivity scores work like this. Burnout risk score runs from 0 to 100, and a weekly average above 50 counts as high. Focus score runs from 0 to 100, and below 50 counts as low. Deep-work hours are the hours of uninterrupted, demanding work done in a day.

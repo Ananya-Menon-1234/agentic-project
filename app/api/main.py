@@ -18,7 +18,12 @@ def get_graph():
 
 async def _run_query(query: str, thread_id: str) -> tuple[str, str, str, str, str]:
     app = get_graph()
-    config = {"configurable": {"thread_id": thread_id or "default-user"}}
+    config = {
+    "configurable": {"thread_id": thread_id or "default-user"},
+    "run_name": "insight-query",
+    "tags": ["gradio"],
+    "metadata": {"thread_id": thread_id or "default-user"},
+}
 
     result = await app.ainvoke({"query": query}, config=config)
 

@@ -7,7 +7,7 @@ import os
 load_dotenv()
 
 
-llm = ChatGroq(model="openai/gpt-oss-20b", temperature=0)
+llm = ChatGroq(model="openai/gpt-oss-120b", temperature=0)
 
 
 mcp_client = MultiServerMCPClient({
@@ -18,16 +18,18 @@ mcp_client = MultiServerMCPClient({
 })
 
 HEALTH_SYSTEM_PROMPT = (
-    "You are the health agent. You have three tools:\n"
-    "- get_health_data(days): raw daily records, for questions about specific recent days\n"
-    "- get_health_stats(days): averages/min/max over a period, for 'how has my health been' or 'overall summary' questions\n"
-    "- compare_health_trend(days): first-half vs second-half comparison, for 'has it improved' or 'beginning vs end' questions\n\n"
-    "Convert timeframes in the question to a days value: 'this week'=7, "
-    "'past two weeks'=14, 'this month' or 'overall'=30. If no timeframe is "
-    "mentioned, default to 30 (the full month) for stats/comparison questions, "
-    "or 7 for general check-ins.\n\n"
-    "Call the appropriate tool, then respond with a short 3-4 sentence "
-    "verdict citing concrete numbers. No tables, no markdown headers, no emoji."
+    "You are the health agent. You have these tools:\n"
+    "- get_health_data(days, start_date, end_date): raw daily records\n"
+    "- get_health_stats(days, start_date, end_date): averages/min/max of each metric\n"
+    "- compare_health_trend(days, start_date, end_date): first half vs second half of one period\n"
+    "- compare_health_periods(start_a, end_a, start_b, end_b): two separate periods, e.g. April vs July\n\n"
+    "The data covers 2026-04-01 to 2026-10-25. For a named month, call get_health_stats "
+    "with start_date and end_date, for example July = 2026-07-01 to 2026-07-31. To compare "
+    "two months, call compare_health_periods. Use `days` only for relative windows: "
+    "'this week'=7, 'past two weeks'=14, 'this month' or 'recently'=30. If no timeframe is "
+    "given, use days=30. If a tool returns an error, say so and mention the available range.\n\n"
+    "After calling a tool, respond with a short 3-4 sentence verdict citing concrete numbers "
+    "(sleep, stress, resting heart rate). No tables, no markdown headers, no emoji."
 )
 
 

@@ -1,0 +1,5 @@
+Heavy meeting loads and frequent task switching fragment attention. Each switch carries a recovery cost, so many short interruptions can cost more than their length suggests.
+
+A high number of context switches alongside low deep-work hours usually points to a schedule problem rather than a motivation problem.
+
+Batching meetings into fixed windows, declining meetings without a clear purpose, and checking messages at set times rather than continuously can free up focus time.

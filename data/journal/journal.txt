@@ -1,0 +1,33 @@
+# date | domain | entry
+2026-04-22 | general | Quarter-end deadline crunch at work. Staying late most nights, skipping workouts, and ordering dinner in instead of cooking.
+2026-04-25 | health | Sleeping around five and a half hours a night because of the deadline. Feeling wired and tired at the same time, and my heart rate feels elevated.
+2026-04-28 | finance | Takeout and a rushed online purchase added up this week. Put the electricity bill on the credit card to avoid a late fee.
+2026-04-30 | productivity | Constant meetings and messages. Hardly any uninterrupted focus time, and I am bouncing between tasks all day.
+2026-05-02 | general | Deadline met. Slept in properly for the first time in two weeks and started to feel like myself again.
+2026-05-21 | finance | An unexpected car repair bill arrived. Paid most of it on the credit card because the emergency fund was thin.
+2026-05-26 | finance | Annual insurance premium and a friend's wedding gift landed in the same week. Skipped my savings contribution this month.
+2026-05-30 | finance | Checked the credit card statement and the balance is much higher than usual. Worried about money, but sleeping and working normally.
+2026-06-03 | finance | Started a plan to pay down the card and cancelled two subscriptions I was not using.
+2026-06-11 | general | Major project launch plus a family event out of town. Schedule completely overloaded.
+2026-06-13 | health | Barely sleeping, around six hours at best, and waking several times a night. Stress is high, I feel run down, and I skipped my walks.
+2026-06-15 | finance | Travel, restaurant meals and last-minute gifts. Spending far above my usual and nothing went into savings.
+2026-06-17 | productivity | Focus has collapsed. Starting tasks and abandoning them, constant context switching, and I feel close to burnout.
+2026-06-21 | general | Launch done and trip over. Took the weekend completely off and am starting to recover.
+2026-07-02 | health | Came down with a bad cold that turned into a persistent cough. Sleep is broken by coughing and my resting heart rate is up.
+2026-07-05 | health | Too tired to exercise for days. Mood is low and I am stressed about being behind, though work and money are fine.
+2026-07-09 | health | Fever has gone but I am still exhausted. Waiting a few more days before deciding whether to see a doctor.
+2026-07-12 | health | Energy is returning. Short walks again and sleeping through the night.
+2026-08-04 | general | Team reorganization at work and a rent increase notice in the same week. Everything feels uncertain.
+2026-08-06 | health | Anxious and sleeping badly, around five and a half to six hours. Stress is high, mood is low and my heart rate is elevated.
+2026-08-09 | finance | Stress shopping and takeout. Also paid a security deposit for a possible new apartment, which drained my account.
+2026-08-11 | productivity | Endless planning meetings and shifting priorities. Almost no deep work and burnout risk is climbing.
+2026-08-15 | general | Reorganization settled and I decided to stay in my current apartment. Already sleeping better.
+2026-09-02 | productivity | Took on two extra projects. My calendar is full of meetings and I keep getting interrupted.
+2026-09-05 | productivity | Deep work time is almost zero. Sleep and money are fine, but I feel unfocused and behind.
+2026-09-09 | productivity | Told my manager the workload is not sustainable. We agreed to move one project to next quarter.
+2026-09-12 | productivity | Blocked my mornings for focus work again and my concentration is returning.
+2026-10-13 | health | Busy period, going to bed after midnight most nights. Sleep is short, stress is rising and resting heart rate is creeping up.
+2026-10-16 | finance | Festival-season spending, travel bookings and gifts. Credit card utilization is high again and savings are low.
+2026-10-19 | health | Still not sleeping well, with high stress and low mood. This is the third rough stretch in a few months.
+2026-10-21 | finance | Reviewed my budget. Savings rate is low and the credit card balance has climbed back up. Considering talking to a financial planner.
+2026-10-24 | general | Slightly better after trimming commitments, but the stress is still lingering.

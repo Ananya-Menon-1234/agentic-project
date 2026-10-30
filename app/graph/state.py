@@ -8,4 +8,7 @@ class AgentState(TypedDict, total=False):
     finance_report: str
     productivity_report: str
     insight: str
+    action_decision: str
     action_taken: str
+    retrieved_context: str
+    retrieval_sources: list[str]

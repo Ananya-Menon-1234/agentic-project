@@ -41,4 +41,7 @@ services:
       - HEALTH_MCP_URL=http://health-server:8000/mcp
       - FINANCE_MCP_URL=http://finance-server:8001/mcp
       - PRODUCTIVITY_MCP_URL=http://productivity-server:8002/mcp
+      - LANGSMITH_TRACING=true
+      - LANGSMITH_API_KEY=${LANGSMITH_API_KEY}
+      - LANGSMITH_PROJECT=personal-insight-agent
     restart: unless-stopped
