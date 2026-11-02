@@ -1,10 +1,10 @@
 # Personal Insight Agent
 
-A multi-agent AI system that analyzes synthetic **health, finance, and productivity data** and generates cross-domain insights using specialized AI agents.
+A multi-agent AI system that analyzes synthetic **health, finance, and productivity data**, retrieves supporting context from a vector database, and generates cross-domain insights using specialized AI agents.
 
-The project was built to explore the engineering behind an agentic AI application — including **agent orchestration, state management, MCP-based tool access, action execution, containerization, and cloud deployment**.
+The project was built to explore the engineering behind an agentic AI application, including **agent orchestration, state management, MCP-based tool access, agentic RAG, validated structured outputs, action execution, observability, containerization, and cloud deployment**.
 
-> **Note:** All health, financial, and productivity data used in this project is synthetic and generated for demonstration purposes. It is not intended for real medical, financial, or productivity recommendations.
+> **Note:** All health, financial, and productivity data, and all journal and guidance text, used in this project is synthetic and written for demonstration purposes. It is not intended for real medical, financial, or productivity recommendations.
 
 ---
 
@@ -16,12 +16,13 @@ This project explores whether a multi-agent system can bring these domains toget
 
 Instead of using one large agent for everything, the system uses specialized agents:
 
-* **Coordinator Agent** — determines which domains are relevant to a user's question
-* **Health Agent** — analyzes health-related data
-* **Finance Agent** — analyzes financial data
-* **Productivity Agent** — analyzes productivity data
-* **Insight Agent** — combines the domain-level reports and identifies cross-domain patterns
-* **Action Agent** — determines whether an action should be taken
+* **Coordinator Agent**: determines which domains are relevant to a user's question
+* **Health Agent**: analyzes health-related data through MCP tools
+* **Finance Agent**: analyzes financial data through MCP tools
+* **Productivity Agent**: analyzes productivity data through MCP tools
+* **Retrieval Agent**: decides which text knowledge source to search (if any) and retrieves relevant context
+* **Insight Agent**: combines the domain reports and retrieved context, and produces a validated action decision
+* **Action Agent**: executes the selected action
 
 The overall workflow is:
 
@@ -30,37 +31,49 @@ The overall workflow is:
                            │
                            ▼
                   ┌─────────────────┐
+                  │ Reset state     │
+                  └────────┬────────┘
+                           ▼
+                  ┌─────────────────┐
                   │ Coordinator     │
                   │ Agent           │
                   └────────┬────────┘
                            │
               ┌────────────┼────────────┐
-              │            │            │
               ▼            ▼            ▼
         ┌──────────┐ ┌──────────┐ ┌──────────────┐
         │  Health  │ │ Finance  │ │ Productivity │
         │  Agent   │ │  Agent   │ │    Agent     │
         └────┬─────┘ └────┬─────┘ └──────┬───────┘
-             │            │              │
              ▼            ▼              ▼
         Health MCP   Finance MCP   Productivity MCP
-             │            │              │
              ▼            ▼              ▼
         health.json  finance.json  productivity.json
              │            │              │
              └────────────┼──────────────┘
                           ▼
+                 ┌─────────────────┐       ┌──────────────────────┐
+                 │ Retrieval Agent │──────▶│ ChromaDB             │
+                 │ (router LLM)    │       │  • journal           │
+                 └────────┬────────┘       │  • knowledge_base    │
+                          │                └──────────────────────┘
+                          ▼
                  ┌─────────────────┐
                  │ Insight Agent   │
+                 │ (validated      │
+                 │  action decision)│
                  └────────┬────────┘
                           │
-                          ▼
-                 ┌─────────────────┐
-                 │ Action Agent    │
-                 └────────┬────────┘
-                          │
-                          ▼
-                        Answer
+                  action needed?
+                    │         │
+                   yes        no
+                    ▼         ▼
+            ┌────────────┐   END
+            │ Action     │
+            │ Agent      │
+            └─────┬──────┘
+                  ▼
+                 END
 ```
 
 ---
@@ -69,9 +82,7 @@ The overall workflow is:
 
 ### Dynamic Agent Routing
 
-The Coordinator Agent determines which domain agents need to execute based on the user's question.
-
-For example:
+The Coordinator Agent classifies the user's question and runs only the domain agents that are relevant.
 
 ```text
 "How has my productivity been this month?"
@@ -97,54 +108,62 @@ Whereas:
     Health   Finance  Productivity
 ```
 
-This prevents unnecessary agents from running for every query.
+This prevents unnecessary agents (and LLM calls) from running for every query.
+
+### Date-Aware MCP Tools
+
+Each domain's MCP server exposes tools that accept either a relative window (`days`) or an explicit date range (`start_date`, `end_date`), plus a tool for comparing two separate periods. This lets the system answer questions such as "How was my health in July?" or "Compare my finances in April and July" with exact, computed numbers.
+
+### Agentic RAG with Two Knowledge Sources
+
+A retrieval node uses an LLM router to decide, per question, whether to search:
+
+* **`journal`**: the user's own diary entries, for "why did this happen" questions
+* **`knowledge_base`**: general guidance and metric definitions, for "what does this mean / what should I do" questions
+* **both**, or **neither** (for example, a greeting or a request that only needs exact numbers)
+
+The router also rewrites the question into a clean search query and can select a specific month, which is applied as a metadata filter.
+
+### Validated Structured Action Decisions
+
+The Insight Agent returns a Pydantic-validated object (summary, action, reasoning) instead of free text that is searched for keywords. The action is restricted to an enum (`none`, `doctor`, `financial_planner`, `both`), and a guardrail overrides any action for a domain that was not analyzed in that run.
+
+### Observability
+
+Every run is traced with **LangSmith**, making routing decisions, MCP tool calls and arguments, prompts, token usage, and latency visible per node.
+
+### Resilience
+
+* A reset node clears per-question state so results do not leak between questions on the same conversation thread
+* Domain agents retry once if the final message is empty, then fall back to summarizing the raw tool output
+* The retrieval router retries once, then falls back to searching both sources with a deterministic month guess
+* The insight agent falls back to "no action" if structured output fails, instead of crashing the graph
 
 ---
 
-### Specialized Domain Agents
-
-Each domain has its own specialized agent.
+## Specialized Domain Agents
 
 #### Health Agent
 
-Analyzes:
-
-* Sleep
-* Steps
-* Resting heart rate
-* Active minutes
-* Calories burned
-* Stress
-* Mood
+Analyzes sleep, steps, resting heart rate, active minutes, calories burned, stress, and mood.
 
 #### Finance Agent
 
-Analyzes:
-
-* Daily spending
-* Account balance
-* Savings rate
-* Credit utilization
-* Financial stress
+Analyzes daily spending, account balance, savings rate, credit utilization, and financial stress.
 
 #### Productivity Agent
 
-Analyzes:
-
-* Focus score
-* Deep work hours
-* Tasks completed
-* Meeting hours
-* Context switches
-* Burnout risk
+Analyzes focus score, deep work hours, tasks completed, meeting hours, context switches, and burnout risk.
 
 ---
 
 ## Synthetic Data
 
-The project uses synthetic JSON data instead of real personal information.
+The project uses synthetic data instead of real personal information. There are two kinds.
 
-The datasets cover September and contain daily records for each domain.
+### Structured data (read by MCP tools)
+
+Daily records from **2026-04-01 to 2026-10-25** for each domain:
 
 ```text
 data/
@@ -153,43 +172,38 @@ data/
 └── productivity.json
 ```
 
-### Creating a Meaningful Pattern
+The data is generated from a shared underlying "life quality" signal plus noise, so the three domains correlate realistically. Several deliberate rough patches are built in, and some affect only one domain so that cross-domain reasoning has something to distinguish:
 
-Rather than generating completely random data, the datasets intentionally contain a period around **September 10–18** where multiple indicators deteriorate together.
+| Period | Domains affected |
+| ------ | ---------------- |
+| Apr 21 to May 1 | health, finance, productivity |
+| May 20 to Jun 2 | finance only |
+| Jun 10 to Jun 20 | health, finance, productivity |
+| Jul 1 to Jul 10 | health only |
+| Aug 3 to Aug 14 | health, finance, productivity |
+| Sep 1 to Sep 10 | productivity only |
+| Oct 12 to Oct 21 | health, finance |
 
-For example:
+Each dip fades over a few days rather than snapping back. The generator uses a fixed random seed, so the data is reproducible.
+
+### Unstructured data (indexed for RAG)
 
 ```text
-Health
-    ↓
-Lower sleep
-Higher stress
-Lower mood
-
-Finance
-    ↓
-Higher spending
-Higher financial stress
-
-Productivity
-    ↓
-Lower focus
-Lower deep work
-More context switching
-Higher burnout risk
+data/
+├── journal/
+│   └── journal.txt          # dated diary entries explaining what happened
+└── knowledge/
+    └── *.txt                # guidance and metric definitions (sleep, savings rate, burnout, ...)
 ```
 
-This creates a synthetic "rough patch" that the Insight Agent can identify across domains.
-
-The purpose is not to establish medically or financially meaningful thresholds. The purpose is to create a dataset where the multi-agent system has meaningful patterns to reason about.
+* The **journal** gives causes ("deadline crunch, slept five hours, ordered takeout") that numbers alone cannot provide
+* The **knowledge files** define the metrics as this app uses them and give general guidance. Thresholds such as "stress above 50 is high" are this app's own alarm levels, not clinical or financial standards
 
 ---
 
 ## MCP Architecture
 
-The domain agents do not directly read the JSON files.
-
-Instead, each domain exposes its data through a dedicated **FastMCP server**.
+The domain agents do not read the JSON files directly. Each domain exposes its data through a dedicated **FastMCP server**.
 
 ```text
 Health Agent
@@ -206,191 +220,156 @@ health.json
 
 The same pattern is used for Finance and Productivity.
 
-### Health MCP Tools
-
-The Health MCP server exposes tools such as:
+### MCP Tools (health shown; finance and productivity mirror it)
 
 ```text
-get_health_data()
-get_health_stats()
-compare_health_trend()
+get_health_data(days, start_date, end_date)        raw daily records
+get_health_stats(days, start_date, end_date)       average / min / max per metric
+compare_health_trend(days, start_date, end_date)   first half vs second half of one period
+compare_health_periods(start_a, end_a, start_b, end_b)   two separate periods, e.g. April vs July
 ```
 
-The corresponding Finance and Productivity MCP servers expose domain-specific tools.
+The finance tools additionally report the latest account balance and balance change. A running balance is not averaged, because averaging a cumulative value is meaningless.
 
-This creates a separation between:
+This keeps a clean separation:
 
 ```text
-Agent
-  │
-  │ reasoning
-  ▼
-MCP Tool
-  │
-  │ data access
-  ▼
-Data Source
+Agent  →  reasoning
+MCP Tool  →  data access and exact computation
+Data Source  →  JSON today; could be a database or API later
 ```
 
-One advantage of this approach is that the underlying data source can be changed later.
+Heavy computation (averages, comparisons) happens inside the tools, so the LLM receives a small summary instead of dozens of raw records. This keeps token usage low and avoids relying on the LLM for arithmetic.
 
-For example:
+---
+
+## Retrieval (Agentic RAG)
+
+Numbers always come from the MCP tools. Retrieval supplies **text only**: the journal's causes and the knowledge base's guidance.
+
+### How retrieval works
 
 ```text
-JSON
- ↓
-Database
- ↓
-External API
- ↓
-Wearable API
+Question
+  → router LLM: picks source(s), rewrites the query, optionally picks a month
+  → Chroma embeds the rewritten query
+  → metadata filter (domain, month)
+  → nearest-neighbor search over stored vectors
+  → top-k chunks returned as text for the Insight Agent
 ```
 
-without fundamentally changing the agent's reasoning layer.
+| Component | Detail |
+| --------- | ------ |
+| Vector store | ChromaDB (persistent), two collections: `journal` and `knowledge_base` |
+| Embeddings | Chroma's default `all-MiniLM-L6-v2` model (384 dimensions), run locally. The same model embeds stored text and queries |
+| Index / distance | HNSW, with Chroma's default distance (squared L2). Smaller distance means closer |
+| Chunking | One chunk per journal entry. Knowledge paragraphs are packed up to about 600 characters |
+| Top-k | 3 from the journal, 2 from the knowledge base |
+| Filtering | Journal search is filtered by routed domain (plus `general` entries) and by month when the router sets one |
+| Router | LLM with JSON-schema structured output; retries once, then falls back |
+
+### What this is not
+
+This is dense semantic retrieval only. There is no keyword/BM25 search, no hybrid search, no reranking, and no similarity threshold. At roughly thirty journal entries and thirty knowledge chunks, those would add complexity without a real benefit. They would be the first things to add if the collections grew into the hundreds.
+
+### Which questions reach which source
+
+| Question type | Tools | Retrieval |
+| ------------- | ----- | --------- |
+| "What was my average sleep in July?" | stats for July | none |
+| "What does a financial stress score mean?" | stats | knowledge |
+| "Why was my June so stressful?" | stats for June | journal (month filter) |
+| "Why was July bad for my health, and what helps?" | stats for July | journal and knowledge |
 
 ---
 
 ## LangGraph Workflow
 
-The overall workflow is orchestrated using **LangGraph**.
-
-The graph contains nodes for:
-
-```text
-Coordinator
-Health
-Finance
-Productivity
-Insight
-Action
-```
-
-The Coordinator uses conditional routing to determine which domain agents should execute.
-
-The domain agents then populate the shared graph state with their reports.
-
-The Insight Agent consumes those reports and produces a combined insight.
-
-Finally, the Action Agent can determine whether an external action should be performed.
-
-Conceptually:
+The workflow is orchestrated with **LangGraph** using a shared typed state (`AgentState`).
 
 ```text
 START
   │
   ▼
-Coordinator
+Reset            clears results from the previous question
   │
-  ├──────────────┐
-  │              │
-  ▼              ▼
+  ▼
+Coordinator      selects relevant domains
+  │
+  ├──────────────┬──────────────┐
+  ▼              ▼              ▼
 Health         Finance       Productivity
-  │              │              │
   └──────────────┼──────────────┘
                  ▼
-              Insight
+             Retrieval        (journal / knowledge / both / none)
                  │
                  ▼
-              Action
+              Insight         (validated action decision)
                  │
-                 ▼
-                END
+          ┌──────┴──────┐
+        action        no action
+          ▼              ▼
+        Action          END
+          │
+          ▼
+         END
 ```
+
+Notes on the design:
+
+* Each node returns only the keys it wants to change, and LangGraph merges them into the shared state
+* The domain nodes use separate edges into `retrieval` instead of a wait-for-all join, because the coordinator may route only one or two domains, and a join on all three would hang
+* A checkpointer keyed by `thread_id` keeps state per conversation. It is in-memory today and would be swapped for SQLite or Postgres in a real deployment
 
 ---
 
 ## Insight Agent
 
-The Insight Agent is responsible for combining the outputs of the relevant domain agents.
-
-For example, the individual agents might identify:
+The Insight Agent combines the relevant domain reports and the retrieved context, looks for relationships across domains, and returns a Pydantic-validated result:
 
 ```text
-Health:
-Sleep decreased and stress increased.
-
-Productivity:
-Focus and deep-work hours decreased while
-context switching increased.
-
-Finance:
-Spending and financial stress increased.
+summary    short plain-text overall summary
+action     none | doctor | financial_planner | both
+reasoning  one sentence explaining the choice
 ```
 
-Instead of returning three independent reports, the Insight Agent looks for relationships between them.
+The action is based on the **domain reports** (the retrieved context is background only), and a guardrail overrides any action for a domain that was not analyzed in that run. For example, a productivity-only question can never book a doctor.
 
-The resulting insight might identify a broader pattern such as:
-
-```text
-A period of increased stress appears to coincide
-with lower sleep, reduced focus and increased
-financial pressure.
-```
-
-The objective is to move from simple data retrieval toward **cross-domain reasoning**.
+The objective is to move from data retrieval toward **cross-domain reasoning**: for example, noticing that a stretch of poor sleep, rising spending, and falling focus line up, and the journal explains why.
 
 ---
 
 ## Action Agent
 
-The Action Agent extends the workflow beyond generating a text response.
+The Action Agent extends the workflow beyond generating a text response. It reads the validated `action_decision` field (no text parsing) and:
 
-The Insight Agent can produce an action decision:
+1. Generates an **iCalendar `.ics` file** for a health check-up and/or a financial planner meeting
+2. Emails it as an attachment through **SMTP**
+3. Reports what was done back into the shared state
 
-```text
-ACTION: none
-
-ACTION: doctor
-
-ACTION: financial_planner
-
-ACTION: both
-```
-
-The Action Agent then handles the selected action.
-
-For the calendar workflow, the application can generate an **iCalendar `.ics` file** containing the appointment information.
-
-The `.ics` file can then be sent through **SMTP** and opened using calendar applications such as:
-
-* Microsoft Outlook
-* Google Calendar
-* Other applications supporting the iCalendar format
-
-Conceptually:
+The `.ics` file opens in Outlook, Google Calendar, and other apps that support iCalendar.
 
 ```text
-Insight Agent
-      │
-      ▼
-Action Decision
-      │
-      ▼
-Action Agent
-      │
-      ▼
-Generate .ics
-      │
-      ▼
-SMTP
-      │
-      ▼
-Calendar Application
+Insight Agent → validated action → Action Agent → .ics → SMTP → Calendar application
 ```
 
-This demonstrates an important agentic pattern:
+This is a **reminder to book a real appointment**, not an actual booking with a clinic or planner. The action functionality is a technical demonstration and should not be interpreted as a real medical or financial recommendation system.
 
-```text
-Observation
-     ↓
-Reasoning
-     ↓
-Decision
-     ↓
-Action
+---
+
+## Observability (LangSmith)
+
+Tracing is enabled with environment variables only, with no changes to the agent code:
+
+```env
+LANGSMITH_TRACING=true
+LANGSMITH_API_KEY=your_langsmith_key
+LANGSMITH_PROJECT=personal-insight-agent
 ```
 
-The action functionality is intended as a technical demonstration and should not be interpreted as an actual medical or financial recommendation system.
+Each question becomes one trace showing the coordinator's routing prompt and answer, each domain agent's MCP tool calls and arguments (for example, which `start_date` and `end_date` it chose for "July"), the retrieval router's structured decision and the chunks fetched, and the Insight Agent's validated output, along with latency and token counts per step.
+
+Note that prompts and data are sent to LangSmith's servers. That is fine for synthetic data, but worth considering before using real personal data.
 
 ---
 
@@ -398,32 +377,25 @@ The action functionality is intended as a technical demonstration and should not
 
 The application is containerized using **Docker** and **Docker Compose**.
 
-The local setup consists of multiple services:
-
 ```text
-┌───────────────────────────────┐
-│         Docker Compose        │
-│                               │
-│  ┌───────────────┐            │
-│  │ Health Server │            │
-│  └───────────────┘            │
-│                               │
-│  ┌───────────────┐            │
-│  │ Finance Server│            │
-│  └───────────────┘            │
-│                               │
-│  ┌─────────────────────┐      │
-│  │ Productivity Server │      │
-│  └─────────────────────┘      │
-│                               │
-│  ┌───────────────┐            │
-│  │ Web / Gradio  │            │
-│  └───────────────┘            │
-│                               │
-└───────────────────────────────┘
+┌───────────────────────────────────────────────┐
+│                 Docker Compose                │
+│                                               │
+│  Health Server        (port 8000)             │
+│  Finance Server       (port 8001)             │
+│  Productivity Server  (port 8002)             │
+│  Web / Gradio         (port 7860)             │
+│     └── ChromaDB index (built into the image) │
+│                                               │
+└───────────────────────────────────────────────┘
 ```
 
-Docker Compose allows the complete application to be started as a group rather than manually launching each service.
+Things worth knowing:
+
+* The MCP servers bind to `0.0.0.0` so other containers can reach them. Binding to `127.0.0.1` only accepts connections from inside the same container
+* Containers reach each other by service name (for example `http://health-server:8000/mcp`), configured through environment variables with a localhost fallback for non-Docker runs
+* The web image copies `data/` and runs the ingest script at build time, so the vector index is baked into the image and the first question is not slow
+* Because the index is baked in, **rebuild the image after changing the journal or knowledge files** (`docker compose up --build`)
 
 ---
 
@@ -457,6 +429,7 @@ Agentic_Project/
 │   │   ├── health_agent.py
 │   │   ├── finance_agent.py
 │   │   ├── productivity_agent.py
+│   │   ├── retrieval_agent.py
 │   │   ├── insight_agent.py
 │   │   └── action_agent.py
 │   │
@@ -464,8 +437,15 @@ Agentic_Project/
 │   │   ├── state.py
 │   │   └── workflow.py
 │   │
+│   ├── rag/
+│   │   ├── store.py          # Chroma client and the two collections
+│   │   └── ingest.py         # builds embeddings from journal and knowledge files
+│   │
+│   ├── mcp/
+│   │   └── reminder_client.py   # .ics generation and SMTP email
+│   │
 │   └── api/
-│       └── main.py
+│       └── main.py           # Gradio frontend
 │
 ├── mcp_servers/
 │   ├── health_server.py
@@ -475,7 +455,11 @@ Agentic_Project/
 ├── data/
 │   ├── health.json
 │   ├── finance.json
-│   └── productivity.json
+│   ├── productivity.json
+│   ├── journal/
+│   │   └── journal.txt
+│   └── knowledge/
+│       └── *.txt
 │
 ├── tests/
 │
@@ -493,21 +477,25 @@ Agentic_Project/
 
 ## Tech Stack
 
-| Technology           | Purpose                                                 |
-| -------------------- | ------------------------------------------------------- |
-| **Python**           | Application and agent development                       |
-| **LangGraph**        | Multi-agent workflow orchestration and state management |
-| **LangChain**        | Agent and LLM integration                               |
-| **Groq**             | LLM inference                                           |
-| **Open-source LLMs** | Language reasoning                                      |
-| **FastMCP**          | MCP server implementation                               |
-| **MCP**              | Tool/data access interface between agents and services  |
-| **Gradio**           | User interface                                          |
-| **Docker**           | Containerization                                        |
-| **Docker Compose**   | Local multi-container orchestration                     |
-| **SMTP**             | Email delivery for calendar actions                     |
-| **iCalendar (.ics)** | Calendar event generation                               |
-| **Railway**          | Cloud deployment                                        |
+| Technology              | Purpose                                                     |
+| ----------------------- | ----------------------------------------------------------- |
+| **Python**              | Application and agent development                           |
+| **LangGraph**           | Multi-agent workflow orchestration and state management     |
+| **LangChain**           | Agent, tool-calling, and LLM integration                    |
+| **Groq**                | LLM inference                                               |
+| **Open-source LLMs**    | Reasoning, routing, and summarization (GPT-OSS family)      |
+| **FastMCP**             | MCP server implementation                                   |
+| **MCP**                 | Tool/data access interface between agents and services      |
+| **ChromaDB**            | Vector database for the journal and knowledge collections   |
+| **Embeddings**          | `all-MiniLM-L6-v2` via Chroma's default embedding function  |
+| **Pydantic**            | Schema-validated structured LLM outputs                     |
+| **LangSmith**           | Tracing and observability                                   |
+| **Gradio**              | User interface                                              |
+| **Docker**              | Containerization                                            |
+| **Docker Compose**      | Local multi-container orchestration                         |
+| **SMTP**                | Email delivery for calendar actions                         |
+| **iCalendar (.ics)**    | Calendar event generation                                   |
+| **Railway**             | Cloud deployment                                            |
 
 ---
 
@@ -549,17 +537,42 @@ pip install -r requirements.txt
 
 ### 4. Configure environment variables
 
-Create a `.env` file in the project root.
-
-Example:
+Create a `.env` file in the project root:
 
 ```env
 GROQ_API_KEY=your_groq_api_key
+
+# Email / calendar actions
+GMAIL_ADDRESS=your_address@gmail.com
+GMAIL_APP_PASSWORD=your_16_character_app_password
+REMINDER_RECIPIENT=your_address@gmail.com
+
+# Observability (optional)
+LANGSMITH_TRACING=true
+LANGSMITH_API_KEY=your_langsmith_key
+LANGSMITH_PROJECT=personal-insight-agent
 ```
 
-If email/calendar actions are enabled, configure the required SMTP variables as well.
+Gmail requires an **app password** (not your normal password). **Do not commit `.env` to GitHub.**
 
-**Do not commit `.env` to GitHub.**
+### 5. Build the vector index
+
+```bash
+python -m app.rag.ingest
+```
+
+This embeds the journal and knowledge files into `chroma_db/`. If you change those files, delete `chroma_db/` and run it again.
+
+### 6. Start the services (without Docker)
+
+Run each from the project root, in separate terminals:
+
+```bash
+python -m mcp_servers.health_server
+python -m mcp_servers.finance_server
+python -m mcp_servers.productivity_server
+python -m app.api.main
+```
 
 ---
 
@@ -583,7 +596,13 @@ The Gradio application should then be available at:
 http://localhost:7860
 ```
 
-To run the services in detached mode:
+To rebuild after changing code or data:
+
+```bash
+docker compose up --build
+```
+
+To run in detached mode:
 
 ```bash
 docker compose up -d
@@ -601,90 +620,98 @@ To stop the application:
 docker compose down
 ```
 
+The `.env` file is not copied into the images. Environment variables are passed to the `web` service through `docker-compose.yaml`.
+
 ---
 
 ## Example Queries
 
-### Domain-specific query
+The data covers 2026-04-01 to 2026-10-25.
+
+### Exact numbers (tools only)
 
 ```text
+What was my average sleep in July?
+Compare my finances in April and July.
 How has my productivity been this month?
 ```
 
-Expected routing:
+### Meaning and guidance (knowledge base)
 
 ```text
-Coordinator
-    ↓
-Productivity Agent
-    ↓
-Productivity MCP
-    ↓
-Insight
-    ↓
-Answer
+What does a financial stress score mean?
+When should I see a financial planner?
+What are the warning signs of burnout?
 ```
 
-### Cross-domain query
+### Causes (journal)
 
 ```text
-How am I doing overall across my health,
-finances and productivity this month?
+Why was my June so stressful?
+What was going on in early September at work?
 ```
 
-Expected routing:
+### Causes plus guidance (both sources)
 
 ```text
-Coordinator
-    ↓
-┌────────┬─────────┬───────────────┐
-Health   Finance   Productivity
-└────────┴─────────┴───────────────┘
-                ↓
-             Insight
-                ↓
-             Answer
+Why was July bad for my health, and what helps?
+I had a rough August. What caused it and what should I do?
 ```
 
-### Action-oriented query
+### Action-oriented
 
 ```text
-My stress and financial stress seem high this month.
-Should I consider speaking to a doctor or financial planner?
+Have I been doing okay financially lately?
+How was my health in June? Should I see a doctor?
 ```
 
-This can demonstrate the Insight → Action workflow and calendar `.ics` generation.
+This demonstrates the Insight → Action workflow and calendar `.ics` generation. Because the decision comes from an LLM, an action is not guaranteed for every phrasing.
+
+### Edge cases
+
+```text
+Hi                                  (no tools, no retrieval, no action)
+How was my health in December?      (tool returns an error with the available range)
+```
 
 ---
 
 ## Example End-to-End Flow
 
-A typical request follows this path:
-
 ```text
-User:
-"How am I doing overall this month?"
+User: "Why was July bad for my health, and what helps?"
                 │
                 ▼
-        Coordinator Agent
+        Coordinator Agent  →  health
                 │
-       ┌────────┼────────┐
-       ▼        ▼        ▼
-    Health   Finance  Productivity
-       │        │        │
-       ▼        ▼        ▼
-     MCP      MCP      MCP
-       │        │        │
-       └────────┼────────┘
+                ▼
+          Health Agent  →  get_health_stats(start_date=2026-07-01, end_date=2026-07-31)
+                │
+                ▼
+        Retrieval Agent (router)
+          sources = journal + knowledge, month = 2026-07
+                │
                 ▼
           Insight Agent
+          summary + validated action = doctor
                 │
                 ▼
-          Action Agent
-                │
-                ▼
-        Final Response
+          Action Agent  →  .ics  →  SMTP  →  reminder email
 ```
+
+---
+
+## Design Decisions and Tradeoffs
+
+**RAG was first built over the JSON data, then replaced.** The first version embedded weekly text summaries generated from the JSON and searched them. In testing, the retrieved weeks often did not match the question, because embeddings match wording rather than numbers. Adding date-range parameters to the MCP tools solved the same problems exactly and deterministically, so the weekly-summary collection was removed. RAG was kept for the content that tools cannot provide: unstructured text (journal entries and guidance).
+
+**Numbers come from tools, text comes from retrieval.** The LLM never does arithmetic over raw records, and retrieval never returns statistics.
+
+**Structured outputs replaced keyword matching.** The action decision used to be inferred by searching the LLM's text for a phrase like "action: doctor", which could silently miss. It is now a schema-validated enum with a domain guardrail.
+
+**Fan-out uses separate edges, not a join.** Waiting for all three domain agents would hang when the coordinator routes only one.
+
+**Free-tier constraints shaped the design.** Rate limits and model deprecations on a free LLM tier led to small tool outputs, per-question routing, retries, and fallbacks, and to checking the live model list rather than trusting hardcoded names.
 
 ---
 
@@ -699,7 +726,9 @@ Some of the questions I wanted to explore were:
 * How should state be maintained across an agent workflow?
 * How can agents access external data through tools?
 * Where does MCP fit into an agent architecture?
-* How can an agent move from reasoning to taking an action?
+* When is retrieval the right tool, and when is a deterministic tool better?
+* How can an agent choose between multiple knowledge sources?
+* How can an agent move from reasoning to taking an action reliably?
 * How should a multi-service agent application be containerized?
 * What changes when the application moves from local development to cloud deployment?
 
@@ -713,40 +742,8 @@ The LLM provides reasoning capabilities, but the surrounding engineering determi
 
 Building this project gave me hands-on experience with:
 
-* Multi-agent orchestration
-* Conditional routing
-* Shared agent state
-* Tool calling
-* MCP architecture
-* FastMCP servers
-* Cross-agent reasoning
-* Action execution
-* Calendar integrations
-* Docker containerization
-* Docker Compose
-* Cloud deployment
-
----
-
-## Future Improvements
-
-Some areas I would like to explore next:
-
-* Replace JSON data sources with databases
-* Connect to real APIs where appropriate
-* Add authentication and user-specific data
-* Improve agent observability and tracing
-* Add stronger validation around agent outputs
-* Add automated tests for agent routing and workflows
-* Add CI/CD using GitHub Actions
-* Improve error handling and retry mechanisms
-* Add more sophisticated action integrations
-* Explore human-in-the-loop approval before sensitive actions
-
----
-
-## Author
-
-**Ananya Menon**
-
-Built as a hands-on exploration of **Agentic AI, multi-agent systems, MCP, LangGraph and AI application deployment**.
+* Multi-agent orchestration and conditional routing
+* Shared agent state and per-question state reset
+* Tool calling and MCP architecture with FastMCP servers
+* Designing a tool API (raw data, aggregates, comparisons, date ranges) to control context size
+*
